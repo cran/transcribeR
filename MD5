@@ -1,0 +1,17 @@
+96e13f78ef4563e0ba76d26060e191de *DESCRIPTION
+727cbe06dc2537ce1b493862e50f0863 *NAMESPACE
+0ca87de38e28da0390be05f1caf0cbb9 *R/appendToCSV.R
+a11e0bbd4c13e99d53dea1e7b8a5f685 *R/cleanFun.R
+9d030ba2e7dd62b2e1bdb04bd6a6e79f *R/createJobCSV.R
+60e3f64b29ac41c48d77feff2ca34590 *R/getRequestResults.R
+17255d5d60d1ff66ebd5d9b31acbb427 *R/getStatus.R
+0d0c571a44e6f4530e407d2471832379 *R/printLanguages.R
+b5fd381013fa9a7c2276be0c941eb354 *R/retrieveText.R
+ff8a35688ddf5d87c1a4172cf726b61b *R/sendAudioGetJobs.R
+3dee5787fc7ecc88b3cce2f8841d6df8 *build/vignette.rds
+3ceb933366037af762b89cff5e9f3fa2 *inst/doc/Transcribing_audio_with_transcribeR.Rmd
+4cfa8d09e6416abc4e212f800ae70a04 *inst/doc/Transcribing_audio_with_transcribeR.html
+e1aada597348716fb2e94d07622b0ef7 *man/printLanguages.Rd
+2529197e7a1a6d0b7b6b28100cf793a4 *man/retrieveText.Rd
+a198c15632d350354d7b1799e39c1a51 *man/sendAudioGetJobs.Rd
+3ceb933366037af762b89cff5e9f3fa2 *vignettes/Transcribing_audio_with_transcribeR.Rmd

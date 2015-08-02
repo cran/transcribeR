@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Abstract</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h1>Abstract</h1>
+
+<p>This vignette demonstrates how to use the transcribeR package in R. The transcribeR package is built to request and receive transcriptions from HP IDOL OnDemand&#39;s Speech Recognition API. The package is easy to use with the related R package <a href="http://structuraltopicmodel.com/">stm</a> for the estimation of audio and video topic models.</p>
+
+<h1>Table of Contents</h1>
+
+<p><a href="#introduction">Introduction</a></p>
+
+<p><a href="#overview">Overview</a></p>
+
+<p><a href="#dependencies">Dependencies</a></p>
+
+<p><a href="#hp-idol-ondemand&#x27;s-speech-recognition-api">HP IDOL OnDemand&#39;s Speech Recognition API</a></p>
+
+<p><a href="#calling-asynchronous">Calling Asynchronous</a></p>
+
+<p><a href="#api-key">API Key</a></p>
+
+<p><a href="#job-ids">Job IDs</a></p>
+
+<p><a href="#language-codes">Language Codes</a></p>
+
+<p><a href="#segmentation">Segmentation</a></p>
+
+<p><a href="#usage-quotas">Usage Quotas</a></p>
+
+<p><a href="#transcriber-csvs">transcribeR CSVs</a></p>
+
+<p><a href="#the-sendaudiogetjobs-function">The sendAudioGetJobs Function</a></p>
+
+<p><a href="#the-retrievetext-function">The retrieveText Function</a></p>
+
+<p><a href="#examples">Examples</a></p>
+
+<h1>Introduction</h1>
+
+<h2>Overview</h2>
+
+<p>Politicians and other speakers increasingly turn to YouTube and other video-sharing websites to both convey their messages to millions around the world and digitally archive their speeches. As a consequence, valuable data to social scientists and historians are being locked away in traditionally intractable audio and video formats. The transcribeR package provides convenient access to HP IDOL OnDemand&#39;s Speech Recognition API and allows for audio and video files to be processed en masse, with all input and output organized into one file. The transcribeR package allows users to send all the files in a specified directory to HP IDOL OnDemand&#39;s Speech Recognition API by using the <code>sendAudioGetJobs</code> function. The same function stores a list of the Job IDs returned by HP into a CSV file. Once all the files are posted to HP, the transcripts can be extracted with the <code>retrieveText</code> function and stored in the same CSV. Hence, all of the information about the audio files and their transcripts is stored in one CSV, eliminating potential confusion and alignment errors that could arise from storing the filename, job ID, and transcripts in separate files.</p>
+
+<h2>Dependencies</h2>
+
+<p>The transcribeR package has the following easy-to-obtain dependencies:</p>
+
+<ul>
+<li><p>httr (R package)</p></li>
+<li><p>HP IDOL OnDemand Speech Recognition API Key</p></li>
+</ul>
+
+<p>In addition, transcribeR currently supports uploading the following file formats: WAV, MP3, MP4, WMA.</p>
+
+<h1>HP IDOL OnDemand&#39;s Speech Recognition API</h1>
+
+<p>HP IDOL OnDemand&#39;s Speech Recognition API is trained to transcribe both audio and video files of human speech. It can work with both local audio and video files as well as video files available from a URL. The transcription time of the video depends on the length and the segmentation of the video, and it can take anywhere from 0.05 to 0.20 seconds per second of video.</p>
+
+<h2>Calling Asynchronous</h2>
+
+<p>The two requests required for calling the API are POST and GET. POST posts a file to the API and GET retrieves the resulting JSON object, which contains the status and output. Because the transcription process takes a nontrivial amount of time to complete, the requests cannot be completed simultaneously, so the output isn&#39;t immediately available. Instead, HP IDOL OnDemand provides a Job ID for tracking the status of the call, and connection with the API does not need to be maintained. When the call is complete, the JSON object has the &ldquo;finished&rdquo; status and the transcription.</p>
+
+<h2>API Key</h2>
+
+<p>In order to use the Speech Recognition API, one must have an API Key. An API Key can be obtained by making an account at <a href="https://www.idolondemand.com/signup.html">HP IDOL OnDemand&#39;s Website</a>. API Keys are passed as parameters to the functions <code>sendAudioGetJobs</code> and <code>retrieveText</code>.</p>
+
+<h2>Job IDs</h2>
+
+<p>The Speech Recognition API keeps track of requests by assigning each one a Job ID. Users can retrieve the job status and transcript at any time via the Job ID. The transcribeR package not only uses Job IDs to retrieve the status, but the function <code>sendAudioGetJobs</code> checks to see if a file already has a Job ID on the transcribeR CSV. If it finds one, it avoids posting the file to HP to minimize upload time and API Key usage.</p>
+
+<h2>Language Codes</h2>
+
+<p>When posting to the Speech Recognition API, a language code must be specified. The default in <code>sendAudioGetJobs</code> is &ldquo;en-US&rdquo; to indicate American English, but other languages can be specified instead. In order to examine which languages are supported, the <code>printLanguages</code> function can be called to list all the language codes to the user.</p>
+
+<h2>Segmentation</h2>
+
+<p>The <code>interval</code> parameter in <code>sendAudioGetJobs</code> specifies segmentation length for transcripts in milliseconds. Specifying segment length risks segmenting the audio during an utterance or spoken word. An argument of -1 indicates that the entire file should be transcribed at once (hence no segmentation), and an argument 0 indicates segmentation by each word, which are determined by periods of silence. Because specifying a segmentation length could split utterances and not periods of silence,  it is not recommended to specify a positive segmentation length. Because the transcription process relies on context to determine additional probability, it is also not recommended to set the <code>interval</code> parameter to zero. This is why -1 is the default value for <code>interval</code>.</p>
+
+<h2>Usage Quotas</h2>
+
+<p>HP IDOL OnDemand provides monthly quotas for using its APIs. When a file is posted to the Speech Recognition API, HP IDOL OnDemand subtracts a call and the data of the audio file from its monthly quota. The quotas can be found at <a href="https://www.idolondemand.com/account/quotas.html">https://www.idolondemand.com/account/quotas.html</a>. The relevant ones as of July 22, 2015 are listed below:</p>
+
+<ul>
+<li><p>Monthly API Calls (50000)</p></li>
+<li><p>Total Input Bytes (30000 MB Source Data)</p></li>
+</ul>
+
+<h1>transcribeR CSVs</h1>
+
+<p>The <code>transcribeR</code> package uses CSVs to store all data because R can easily read a CSV to make a data frame and write to a CSV from a data frame. Within the CSV, six columns are used to store the values associated with each file that <code>transcribeR</code> processes. By storing the filename in the CSV, <code>transcribeR</code> can read that file name determine if that file was ever successfully posted to the Speech Recognition API. And pairing the file name and job ID as two entries in the same row of a CSV allows the user to clearly determine which file corresponds to which request made to the API. The resulting transcript from the API is stored in the Transcript field of the same row. With this arrangement, the user can easily determine the input and output at each stage of using the API.</p>
+
+<p>The <code>transcribeR</code> package reads and writes CSVs which have the following columns (in order and verbatim):</p>
+
+<ul>
+<li><p>DATE - the date when the file was posted to the Speech Recognition API.</p></li>
+<li><p>APIKEY - the APIKEY used to make the request.</p></li>
+<li><p>FILENAME - the filepath of the posted file; the <code>sendAudioGetJobs</code> function relies on reading the FILENAME field to determine if a file was previously posted so that it will avoid posting it again.</p></li>
+<li><p>LANGUAGE - the associated HP language code</p></li>
+<li><p>JOBID - the Job ID returned by the API when the file is posted</p></li>
+<li><p>TRANSCRIPT - the transcript retrieved from the API once <code>retrieveText</code> when the job&#39;s status is &ldquo;finished&rdquo;&ldquo;; if the job&#39;s status is not &quot;finished&rdquo;, then the current status is written to the TRANSCRIPT field. If and only if the TRANSCRIPT field for a file is either <code>NULL</code> or a status that isn&#39;t &ldquo;finished&rdquo;, then <code>retrieveText</code> will update the field.</p></li>
+</ul>
+
+<h1>The sendAudioGetJobs() Function</h1>
+
+<p>The <code>sendAudioGetJobs</code> function handles the POST request to the Speech Recognition API. It accepts the following parameters:</p>
+
+<ul>
+<li><p>wav.dir &ndash; the directory in which the WAV files of interest are located</p></li>
+<li><p>api.key &ndash; the API Key used to authenticate requests made to HP Idol OnDemand</p></li>
+<li><p>interval (defaults to &ldquo;-1&rdquo;) &ndash; the segmentation interval used by the Speech Recognition API</p></li>
+<li><p>encode (defaults to &ldquo;multipart&rdquo;) &ndash; the format used when posting the file to the Speech Recognition API</p></li>
+<li><p>existing.csv (defaults to NULL) &ndash; a CSV that <code>sendAudioGetJobs</code> will append to rather than overwrite; if NULL, it will create a new CSV specified by csv.location</p></li>
+<li><p>csv.location &ndash; the path of the output file to be used when a new CSV is created</p></li>
+<li><p>language (defaults to &ldquo;en-US&rdquo;) &ndash; the language code used by HP</p></li>
+<li><p>verbose (defaults to FALSE) &ndash; when TRUE, prints the uploading progress to the user</p></li>
+</ul>
+
+<p>While it examines all WAV files in wav.dir, it only posts the files that are not also found in the existing CSV by checking the FILENAME column for the filename. The function itself returns the number of files that were uploaded in the instance it was called.</p>
+
+<h1>The retrieveText() Function</h1>
+
+<p>The <code>retrieveText</code> function updates the TRANSCRIPT field in a transcribeR with the results currently held by the Speech Recognition API. It currently checks for rows whose TRANSCRIPT field is one of the following: &#39;queued&#39;, NA, or NULL, and then uses the Job IDs corresponding to those rows to retrieve the transcripts from the Speech Recognition API. It accepts the following parameters:</p>
+
+<ul>
+<li><p>job.file &ndash; the transcribeR CSV that will be examined</p></li>
+<li><p>api.key &ndash; the API Key used to authenticate requests made to HP Idol OnDemand</p></li>
+</ul>
+
+<p>The function itself returns the updated data frame corresponding to the Job CSV.</p>
+
+<h1>Examples</h1>
+
+<p>From the included example.R file:</p>
+
+<pre><code class="R">fnames &lt;- c(&#39;boxer.wav&#39;, &#39;merkley.wav&#39;) # Example with 2 files
+urls &lt;- paste(&quot;http://christopherlucas.org/transcribeR/&quot;, fnames, sep = &#39;&#39;)
+lapply(urls, function(x) download.file(x, destfile = basename(x), mode = &quot;wb&quot;))
+
+WAV_DIR &lt;- getwd()
+
+library(transcribeR)
+
+print(&quot;First, printing language codes.&quot;)
+
+printLanguages()
+
+Sys.sleep(3)
+
+print(&quot;Now posting requests to HP IDOL OnDemand&#39;s Speech Recognition API.&quot;)
+
+sendAudioGetJobs(wav.dir = WAV_DIR,
+                 api.key = API_KEY,
+                 interval = &quot;-1&quot;,             # Transcript will not be segmented
+                 encode = &quot;multipart&quot;,
+                 existing.csv = NULL,         # Intended to create a new CSV
+                 csv.location = CSV_LOCATION,
+                 language = &quot;en-US&quot;,          # As printed above, one of the language codes
+                 verbose = TRUE)              # Prints out uploading progress to the user
+
+Sys.sleep(3)
+
+print(&quot;Waiting before requesting transcriptions.&quot;)
+
+Sys.sleep(20) # Adequate delay to allow the Speech Recognition API to compute the most probable transcription.
+
+retrieveText(job.file = CSV_LOCATION,
+             api.key = API_KEY)
+
+print(&quot;Transcripts were requested.&quot;)
+
+print(&quot;What if another file is added to the directory?&quot;) # Runs again with a newly added file
+
+Sys.sleep(3)
+
+url &lt;- &quot;http://christopherlucas.org/transcribeR/warren.wav&quot;
+download.file(url, destfile = basename(url))
+WAV_DIR &lt;- getwd()
+
+sendAudioGetJobs(wav.dir = WAV_DIR,
+                 api.key = API_KEY,
+                 interval = &quot;-1&quot;,             # Transcript will not be segmented
+                 encode = &quot;multipart&quot;,
+                 existing.csv = CSV_LOCATION,         # Intended to create a new CSV
+                 csv.location = CSV_LOCATION,
+                 language = &quot;en-US&quot;,          # As printed above, one of the language codes
+                 verbose = TRUE)              # Prints out uploading progress to the user
+
+Sys.sleep(3)
+
+print(&quot;Waiting before requesting transcriptions.&quot;)
+
+Sys.sleep(10) # Adequate delay to allow the Speech Recognition API to compute the most probable transcription.
+
+retrieveText(job.file = CSV_LOCATION,
+             api.key = API_KEY)
+
+print(&quot;Transcripts were requested.&quot;)
+
+print(&quot;Done!&quot;)
+</code></pre>
+
+</body>
+
+</html>
